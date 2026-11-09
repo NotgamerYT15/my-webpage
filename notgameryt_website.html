@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090b14">
+  <meta name="description" content="Search YouTube channels, Instagram profiles, and movies in one place.">
+  <title>NotGamerYT — Search Everything</title>
+  <style>
+    :root { color-scheme: dark; --bg:#090b14; --panel:#121726; --muted:#9ba6bd; --text:#f4f7ff; --accent:#8b5cf6; --line:#273149; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; color:var(--text); background:radial-gradient(ellipse at 50% -15%,#30205e 0,transparent 48%),var(--bg); }
+    .wrap { width:min(1050px,92%); margin:auto; padding:52px 0 30px; }
+    header { text-align:center; margin-bottom:38px; }
+    .logo { display:inline-flex; align-items:center; gap:10px; font-weight:850; letter-spacing:-1px; font-size:clamp(28px,5vw,44px); }
+    .logo-mark { display:grid; place-items:center; width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#8b5cf6,#ec4899);box-shadow:0 8px 30px #8b5cf655;font-size:22px; }
+    .domain { color:#c4b5fd; font-size:13px; letter-spacing:2px; margin-top:9px; }
+    h1 { font-size:clamp(26px,5vw,42px); margin:28px 0 10px; letter-spacing:-1.5px; }
+    .subtitle { color:var(--muted); margin:0 auto; max-width:560px; line-height:1.6; }
+    .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:34px; }
+    .card { background:linear-gradient(160deg,#171e30,#101522); border:1px solid var(--line); border-radius:22px; padding:24px; box-shadow:0 18px 50px #0003; display:flex; flex-direction:column; min-width:0; }
+    .icon { width:52px;height:52px;display:grid;place-items:center;border-radius:16px;font-size:25px;margin-bottom:18px; }
+    .yt .icon { background:#ff003322; } .ig .icon { background:#d946ef22; } .movie .icon { background:#f59e0b22; }
+    h2 { font-size:21px; margin:0 0 8px; }
+    .desc { color:var(--muted); font-size:14px; line-height:1.5; min-height:42px; margin:0 0 18px; }
+    label { font-size:12px; color:#c4cde0; margin-bottom:8px; }
+    input { width:100%; padding:14px 13px; border-radius:12px; border:1px solid #34405a; background:#0b1020; color:var(--text); outline:none; font:inherit; font-size:14px; }
+    input:focus { border-color:#a78bfa; box-shadow:0 0 0 3px #8b5cf633; }
+    button { border:0; border-radius:12px; padding:13px 15px; margin-top:12px; color:white; font-weight:750; font-size:14px; cursor:pointer; transition:transform .15s,filter .15s; }
+    button:hover { transform:translateY(-2px); filter:brightness(1.1); }
+    .yt button { background:#e11d48; } .ig button { background:linear-gradient(110deg,#8b5cf6,#db2777,#f97316); } .movie button { background:#b7791f; }
+    .hint { color:#8290aa; font-size:11px; margin-top:10px; min-height:14px; }
+    footer { text-align:center; color:#76829b; font-size:12px; margin-top:36px; }
+    footer a { color:#c4b5fd; text-decoration:none; }
+    @media(max-width:800px) { .grid { grid-template-columns:1fr; } .desc { min-height:0; } .wrap { padding-top:35px; } }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header>
+      <div class="logo"><span class="logo-mark">N</span> NotGamerYT</div>
+      <div class="domain">NOTGAMERYT.COM</div>
+      <h1>What are you looking for?</h1>
+      <p class="subtitle">Three quick ways to search. Choose a category, enter a name or ID, and jump straight to the results.</p>
+    </header>
+
+    <section class="grid" aria-label="Search categories">
+      <article class="card yt">
+        <div class="icon" aria-hidden="true">▶</div>
+        <h2>YouTube Channel</h2>
+        <p class="desc">Find a YouTube creator or channel by name or handle.</p>
+        <label for="youtubeQuery">Channel name or @handle</label>
+        <input id="youtubeQuery" type="text" placeholder="e.g. @NotGamer568" autocomplete="off">
+        <button type="button" onclick="searchYouTube()">Search YouTube</button>
+        <div class="hint">Opens YouTube channel search results.</div>
+      </article>
+
+      <article class="card ig">
+        <div class="icon" aria-hidden="true">◎</div>
+        <h2>Instagram ID</h2>
+        <p class="desc">Open an Instagram profile using its username.</p>
+        <label for="instagramQuery">Instagram username</label>
+        <input id="instagramQuery" type="text" placeholder="e.g. username or @username" autocomplete="off">
+        <button type="button" onclick="searchInstagram()">Find Instagram ID</button>
+        <div class="hint">Enter the username, without a password.</div>
+      </article>
+
+      <article class="card movie">
+        <div class="icon" aria-hidden="true">🎬</div>
+        <h2>Movie Search</h2>
+        <p class="desc">Search for a movie title and explore its details.</p>
+        <label for="movieQuery">Movie name</label>
+        <input id="movieQuery" type="text" placeholder="e.g. Interstellar" autocomplete="off">
+        <button type="button" onclick="searchMovie()">Search Movies</button>
+        <div class="hint">Opens movie results on TMDB.</div>
+      </article>
+    </section>
+
+    <footer>Made for quick searching · <a href="https://notgameryt.com">notgameryt.com</a></footer>
+  </main>
+
+  <script>
+    function valueOf(id) { return document.getElementById(id).value.trim(); }
+    function searchYouTube() {
+      const q = valueOf('youtubeQuery');
+      if (!q) return alert('Please enter a YouTube channel name or handle.');
+      window.open('https://www.youtube.com/results?search_query=' + encodeURIComponent(q) + '&sp=EgIQAg%253D%253D', '_blank', 'noopener,noreferrer');
+    }
+    function searchInstagram() {
+      let q = valueOf('instagramQuery');
+      if (!q) return alert('Please enter an Instagram username.');
+      q = q.replace(/^@/, '');
+      const match = q.match(/instagram\.com\/([A-Za-z0-9._]+)/i);
+      if (match) q = match[1];
+      if (!/^[A-Za-z0-9._]{1,30}$/.test(q)) return alert('Please enter a valid Instagram username.');
+      window.open('https://www.instagram.com/' + encodeURIComponent(q) + '/', '_blank', 'noopener,noreferrer');
+    }
+    function searchMovie() {
+      const q = valueOf('movieQuery');
+      if (!q) return alert('Please enter a movie name.');
+      window.open('https://www.themoviedb.org/search?query=' + encodeURIComponent(q), '_blank', 'noopener,noreferrer');
+    }
+    document.addEventListener('keydown', e => {
+      if (e.key !== 'Enter') return;
+      const id = e.target.id;
+      if (id === 'youtubeQuery') searchYouTube();
+      if (id === 'instagramQuery') searchInstagram();
+      if (id === 'movieQuery') searchMovie();
+    });
+  </script>
+</body>
+</html>
